@@ -1,27 +1,49 @@
-const getTodos = (callback) => {
-  const request = new XMLHttpRequest();
+// const getTodos = (callback) => {
+//   const request = new XMLHttpRequest();
 
-  request.addEventListener('readystatechange', () => {
-    //console.log(request, request.readyState);
-    if(request.readyState === 4 && request.status === 200) {
-      const data = JSON.parse(request.responseText)
-      callback(undefined, data);
-    } else if (request.readyState === 4) {
-      callback('could not fetch data', undefined);
-    }
-  })
-  request.open('GET', 'todos.json');
-  request.send();
+//   request.addEventListener('readystatechange', () => {
+//     //console.log(request, request.readyState);
+//     if(request.readyState === 4 && request.status === 200) {
+//       const data = JSON.parse(request.responseText)
+//       callback(undefined, data);
+//     } else if (request.readyState === 4) {
+//       callback('could not fetch data', undefined);
+//     }
+//   })
+//   request.open('GET', 'todos.json');
+//   request.send();
+// }
+
+// getTodos((err, data) => {
+//   console.log('callback fired');
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(data);
+//     data.forEach((obj) => {
+//       console.log(`text: ${obj.text} was done by ${obj.author}`);
+//     })
+//   }
+// });
+
+
+// fetch('todos.json').then(response => {
+//   console.log(response)
+// }).catch(err => {
+//   console.log(err);
+// })
+
+
+const getTodos = async() => {
+  const response = await fetch('todos.json');
+
+  if(response.status !== 200) {
+    throw new Error('cannot fetch the data');
+  }
+  const data = await response.json();
+  return data;
 }
 
-getTodos((err, data) => {
-  console.log('callback fired');
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(data);
-    data.forEach((obj) => {
-      console.log(`text: ${obj.text} was done by ${obj.author}`);
-    })
-  }
-});
+getTodos()
+  .then(data => console.log('resolved:', data))
+  .catch(err => console.log('rejected:',err.message))

@@ -1,9 +1,27 @@
-console.log(1);
-console.log(2);
+const getTodos = (callback) => {
+  const request = new XMLHttpRequest();
 
-setTimeout(() => {
-  console.log('callback function fired');
-}, 2000);
+  request.addEventListener('readystatechange', () => {
+    //console.log(request, request.readyState);
+    if(request.readyState === 4 && request.status === 200) {
+      const data = JSON.parse(request.responseText)
+      callback(undefined, data);
+    } else if (request.readyState === 4) {
+      callback('could not fetch data', undefined);
+    }
+  })
+  request.open('GET', 'todos.json');
+  request.send();
+}
 
-console.log(3);
-console.log(4);
+getTodos((err, data) => {
+  console.log('callback fired');
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(data);
+    data.forEach((obj) => {
+      console.log(`text: ${obj.text} was done by ${obj.author}`);
+    })
+  }
+});
